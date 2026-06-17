@@ -36,7 +36,7 @@ st.markdown("""
 st.markdown('<p class="main-title">🎵 My Playlist</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">오늘의 기분에 맞는 노래를 들어보세요!</p>', unsafe_allow_html=True)
 
-# 4. 노래 데이터 세팅 (원하는 노래를 자유롭게 추가해보세요!)
+# 4. 노래 데이터 세팅
 songs = [
     {"title": "Dynamite", "artist": "BTS", "mood": "💃 신나는", "emoji": "✨", "url": "https://www.youtube.com/results?search_query=BTS+Dynamite"},
     {"title": "밤편지", "artist": "아이유 (IU)", "mood": "☕ 잔잔한", "emoji": "💌", "url": "https://www.youtube.com/results?search_query=아이유+밤편지"},
@@ -45,7 +45,7 @@ songs = [
     {"title": "모든 날, 모든 순간", "artist": "폴킴", "mood": "☕ 잔잔한", "emoji": "🌅", "url": "https://www.youtube.com/results?search_query=폴킴+모든날모든순간"}
 ]
 
-# 5. 사이드바 또는 상단에 필터(선택창) 만들기
+# 5. 상단 필터 선택창
 mood_options = ["전체보기", "💃 신나는", "☕ 잔잔한", "🌙 위로되는"]
 selected_mood = st.selectbox("👉 지금 기분이 어떠신가요?", mood_options)
 
@@ -57,9 +57,17 @@ else:
 
 st.write("---")
 
-# 7. 노래 목록을 Grid(카드 형태)로 배치하기
-# 한 줄에 3개씩 보여주기 위해 컬럼 생성
+# 7. 노래 목록을 카드 형태로 배치하기
 cols = st.columns(3)
 
 for idx, song in enumerate(filtered_songs):
-    # 컬럼 번갈아가며 배치 (0, 1,
+    # 컬럼 번갈아가며 배치 (0, 1, 2)
+    with cols[idx % 3]:
+        # 스트림릿 내장 컨테이너로 카드 효과 내기
+        with st.container(border=True):
+            st.markdown(f"### {song['emoji']} {song['title']}")
+            st.caption(f"**아티스트:** {song['artist']}")
+            st.markdown(f"`#{song['mood'].split()[-1]}`")
+            
+            # 들어보기 버튼
+            st.link_button("🎧 들어보기", song["url"], use_container_width=True)
