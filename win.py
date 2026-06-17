@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎵 나의 최애 노래 추천소</title>
+    <title>나의 최애 노래 추천소</title>
     <style>
         :root {
             --bg-color: #f8f9fa;
@@ -133,22 +133,22 @@
 <body>
 
     <header>
-        <h1>🎵 My Playlist</h1>
+        <h1>My Playlist</h1>
         <p>오늘의 기분에 맞는 노래를 들어보세요!</p>
     </header>
 
     <div class="filter-buttons">
         <button class="btn active" onclick="filterSongs('all')">전체보기</button>
-        <button class="btn" onclick="filterSongs('신나는')">💃 신나는</button>
-        <button class="btn" onclick="filterSongs('잔잔한')">☕ 잔잔한</button>
-        <button class="btn" onclick="filterSongs('위로되는')">🌙 위로되는</button>
+        <button class="btn" onclick="filterSongs('신나는')">신나는</button>
+        <button class="btn" onclick="filterSongs('잔잔한')">잔잔한</button>
+        <button class="btn" onclick="filterSongs('위로되는')">위로되는</button>
     </div>
 
     <div class="playlist-container" id="playlist">
-        </div>
+        <!-- 카드가 생성되는 곳 -->
+    </div>
 
     <script>
-        // 💡 여기에 본인이 추천하고 싶은 노래 데이터를 마음껏 추가하세요!
         const songs = [
             {
                 title: "Dynamite",
@@ -187,10 +187,9 @@
             }
         ];
 
-        // 노래 카드를 화면에 그리는 함수
         function displaySongs(songList) {
             const playlistContainer = document.getElementById('playlist');
-            playlistContainer.innerHTML = ''; // 기존 카드 초기화
+            playlistContainer.innerHTML = '';
 
             songList.forEach(song => {
                 const card = document.createElement('div');
@@ -200,4 +199,31 @@
                     <div class="song-title">${song.title}</div>
                     <div class="artist">${song.artist}</div>
                     <span class="mood-tag">#${song.mood}</span><br>
-                    <a href="${song.url}" target="_blank" class
+                    <a href="${song.url}" target="_blank" class="listen-btn">들어보기</a>
+                `;
+                playlistContainer.appendChild(card);
+            });
+        }
+
+        function filterSongs(mood) {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+
+            if (mood === 'all') {
+                displaySongs(songs);
+            } else {
+                const filtered = songs.filter(song => song.mood === mood);
+                displaySongs(filtered);
+            }
+        }
+
+        window.onload = () => {
+            displaySongs(songs);
+        };
+    </script>
+</body>
+</html>
