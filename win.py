@@ -1,229 +1,65 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>나의 최애 노래 추천소</title>
+import streamlit as st
+
+# 1. 페이지 설정 (웹브라우저 탭에 표시될 내용)
+st.set_page_config(
+    page_title="나의 최애 노래 추천소",
+    page_icon="🎵",
+    layout="wide"
+)
+
+# 2. 스타일링 (스트림릿 내부에 CSS 주입)
+st.markdown("""
     <style>
-        :root {
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-            --primary-color: #ff4757;
-        }
-
-        body {
-            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            color: var(--primary-color);
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .filter-buttons {
-            margin-bottom: 30px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn {
-            background-color: white;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover, .btn.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .playlist-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .album-art {
-            width: 120px;
-            height: 120px;
-            background-color: #ddd;
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .song-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin: 10px 0 5px;
-        }
-
-        .artist {
-            color: #666;
-            margin-bottom: 15px;
-            font-size: 0.95rem;
-        }
-
-        .mood-tag {
-            display: inline-block;
-            background-color: #f1f2f6;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            color: #57606f;
-            margin-bottom: 15px;
-        }
-
-        .listen-btn {
-            display: inline-block;
-            background-color: #ff4757;
-            color: white;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        .listen-btn:hover {
-            background-color: #e84118;
-        }
+    .main-title {
+        color: #ff4757;
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .sub-title {
+        text-align: center;
+        color: #666666;
+        margin-bottom: 30px;
+    }
+    div[data-testid="stMetric"] {
+        background-color: #ffffff;
+        border: 1px solid #e6e6e6;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+    }
     </style>
-</head>
-<body>
+""", unsafe_allow_html=True)
 
-    <header>
-        <h1>My Playlist</h1>
-        <p>오늘의 기분에 맞는 노래를 들어보세요!</p>
-    </header>
+# 3. 헤더 표시
+st.markdown('<p class="main-title">🎵 My Playlist</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">오늘의 기분에 맞는 노래를 들어보세요!</p>', unsafe_allow_html=True)
 
-    <div class="filter-buttons">
-        <button class="btn active" onclick="filterSongs('all')">전체보기</button>
-        <button class="btn" onclick="filterSongs('신나는')">신나는</button>
-        <button class="btn" onclick="filterSongs('잔잔한')">잔잔한</button>
-        <button class="btn" onclick="filterSongs('위로되는')">위로되는</button>
-    </div>
+# 4. 노래 데이터 세팅 (원하는 노래를 자유롭게 추가해보세요!)
+songs = [
+    {"title": "Dynamite", "artist": "BTS", "mood": "💃 신나는", "emoji": "✨", "url": "https://www.youtube.com/results?search_query=BTS+Dynamite"},
+    {"title": "밤편지", "artist": "아이유 (IU)", "mood": "☕ 잔잔한", "emoji": "💌", "url": "https://www.youtube.com/results?search_query=아이유+밤편지"},
+    {"title": "수고했어 오늘도", "artist": "옥상달빛", "mood": "🌙 위로되는", "emoji": "🌳", "url": "https://www.youtube.com/results?search_query=옥상달빛+수고했어+오늘도"},
+    {"title": "Hype Boy", "artist": "NewJeans", "mood": "💃 신나는", "emoji": "👖", "url": "https://www.youtube.com/results?search_query=NewJeans+Hype+Boy"},
+    {"title": "모든 날, 모든 순간", "artist": "폴킴", "mood": "☕ 잔잔한", "emoji": "🌅", "url": "https://www.youtube.com/results?search_query=폴킴+모든날모든순간"}
+]
 
-    <div class="playlist-container" id="playlist">
-        <!-- 카드가 생성되는 곳 -->
-    </div>
+# 5. 사이드바 또는 상단에 필터(선택창) 만들기
+mood_options = ["전체보기", "💃 신나는", "☕ 잔잔한", "🌙 위로되는"]
+selected_mood = st.selectbox("👉 지금 기분이 어떠신가요?", mood_options)
 
-    <script>
-        const songs = [
-            {
-                title: "Dynamite",
-                artist: "BTS",
-                mood: "신나는",
-                emoji: "✨",
-                url: "https://www.youtube.com/results?search_query=BTS+Dynamite"
-            },
-            {
-                title: "밤편지",
-                artist: "아이유 (IU)",
-                mood: "잔잔한",
-                emoji: "💌",
-                url: "https://www.youtube.com/results?search_query=아이유+밤편지"
-            },
-            {
-                title: "수고했어 오늘도",
-                artist: "옥상달빛",
-                mood: "위로되는",
-                emoji: "🌳",
-                url: "https://www.youtube.com/results?search_query=옥상달빛+수고했어+오늘도"
-            },
-            {
-                title: "Hype Boy",
-                artist: "NewJeans",
-                mood: "신나는",
-                emoji: "👖",
-                url: "https://www.youtube.com/results?search_query=NewJeans+Hype+Boy"
-            },
-            {
-                title: "모든 날, 모든 순간",
-                artist: "폴킴",
-                mood: "잔잔한",
-                emoji: "🌅",
-                url: "https://www.youtube.com/results?search_query=폴킴+모든날모든순간"
-            }
-        ];
+# 6. 필터링된 노래 분류
+if selected_mood == "전체보기":
+    filtered_songs = songs
+else:
+    filtered_songs = [song for song in songs if song["mood"] == selected_mood]
 
-        function displaySongs(songList) {
-            const playlistContainer = document.getElementById('playlist');
-            playlistContainer.innerHTML = '';
+st.write("---")
 
-            songList.forEach(song => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <div class="album-art">${song.emoji}</div>
-                    <div class="song-title">${song.title}</div>
-                    <div class="artist">${song.artist}</div>
-                    <span class="mood-tag">#${song.mood}</span><br>
-                    <a href="${song.url}" target="_blank" class="listen-btn">들어보기</a>
-                `;
-                playlistContainer.appendChild(card);
-            });
-        }
+# 7. 노래 목록을 Grid(카드 형태)로 배치하기
+# 한 줄에 3개씩 보여주기 위해 컬럼 생성
+cols = st.columns(3)
 
-        function filterSongs(mood) {
-            const buttons = document.querySelectorAll('.btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            if (event && event.target) {
-                event.target.classList.add('active');
-            }
-
-            if (mood === 'all') {
-                displaySongs(songs);
-            } else {
-                const filtered = songs.filter(song => song.mood === mood);
-                displaySongs(filtered);
-            }
-        }
-
-        window.onload = () => {
-            displaySongs(songs);
-        };
-    </script>
-</body>
-</html>
+for idx, song in enumerate(filtered_songs):
+    # 컬럼 번갈아가며 배치 (0, 1,
